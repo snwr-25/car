@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی بەڕێوەبردنی ئۆتۆمبێلەکان - پارێزگای هەولێر</title>
     <style>
-                       :root {
+        :root {
             --primary-color: #2a6fdb;
             --primary-rgb: 42, 111, 219;
             --secondary-color: #6a7185;
@@ -126,12 +126,10 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid var(--border-color);
-            /* === گۆڕانکاری لێرە کراوە === */
             transition: background-color 0.3s, border-color 0.3s, border-radius 0.3s;
         }
-        /* === گۆڕانکاری لێرە کراوە: زیادکردنی hover effectی باشتر === */
         .accordion .department-header:hover {
-            background-color: rgba(var(--primary-rgb), 0.05); /* ڕەنگێکی شینی زۆر کاڵ */
+            background-color: rgba(var(--primary-rgb), 0.05);
             border-color: rgba(var(--primary-rgb), 0.4);
         }
         .accordion .department-header.active {
@@ -154,15 +152,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: var(--primary-color);
-            /* === گۆڕانکاری لێرە کراوە: گەورەکردن و بۆڵدکردن === */
-            font-size: 28px; /* گەورەتر کرا */
-            font-weight: 700; /* بۆڵد کرا */
+            font-size: 28px;
+            font-weight: 700;
             line-height: 1;
             transition: transform 0.3s ease;
         }
         .accordion .department-header.active .arrow::before {
             content: '−';
-            transform: translate(-50%, -50%); /* پێویست بە rotate ناکات */
+            transform: translate(-50%, -50%);
         }
 
         .accordion .department-content {
@@ -190,7 +187,6 @@
         .vehicle-table tbody tr:hover { background-color: #f7f9fc; }
         .vehicle-table .actions { display: flex; gap: 8px; flex-wrap: wrap; }
         .vehicle-table .actions .btn { box-shadow: none; }
-
 
         .footer-credit { text-align: center; color: var(--secondary-color); padding: 30px; margin-top: 40px; font-size: 0.9em; }
 
@@ -303,9 +299,122 @@
             background-color: #e9ecef;
         }
         .department-checkbox-item input {
-            margin-left: 10px; /* بۆ دروستکردنی بۆشایی لە RTL */
+            margin-left: 10px;
         }
-          </style>
+        
+        /* ======================================================= */
+        /*               ستايلەکان بۆ مۆبایل (Responsive)              */
+        /* ======================================================= */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+                margin: 10px auto;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .header p {
+                font-size: 1em;
+            }
+
+            .main-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .main-controls > div {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .main-controls .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .accordion .department-header h2 {
+                font-size: 1.1em;
+            }
+
+            .vehicle-table thead {
+                display: none;
+            }
+
+            .vehicle-table, .vehicle-table tbody, .vehicle-table tr, .vehicle-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .vehicle-table tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius-sm);
+                background-color: var(--card-background);
+                padding: 10px;
+            }
+            
+            .vehicle-table td {
+                text-align: right;
+                padding-right: 50%; /* بۆشایی بۆ ناوەڕۆک لە RTL */
+                position: relative;
+                border: none;
+                border-bottom: 1px solid #eee;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            .vehicle-table tr td:last-child {
+                border-bottom: none;
+            }
+
+            .vehicle-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                right: 15px;
+                width: 45%;
+                padding-left: 10px;
+                font-weight: bold;
+                text-align: right;
+                color: var(--primary-color);
+            }
+
+            .vehicle-table td.actions {
+                padding: 10px 0;
+                padding-right: 0;
+            }
+            
+            .vehicle-table .actions {
+                justify-content: flex-start;
+            }
+            
+            .vehicle-table td.actions::before {
+                display: none; /* شاردنەوەی "کردارەکان" */
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 10% auto;
+                width: 95%;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #expense-list .expense-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            #expense-list .expense-item .remove-expense-btn {
+                width: 100%;
+                margin-top: 5px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -379,8 +488,6 @@
     <!-- Print Area -->
     <div id="print-area" style="display: none;"></div>
 
-//بۆ دیاركردنی پرێنت //
-
     <!-- Report Selection Modal -->
     <div id="report-modal" class="modal">
         <div class="modal-content">
@@ -398,7 +505,6 @@
             </div>
         </div>
     </div>
-
 
     <script src="app.js"></script>
 
