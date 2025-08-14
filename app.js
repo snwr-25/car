@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const STORAGE_KEY = 'erbil_gov_vehicles_data_v3';
     let vehicleData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 
-    // پێناسەکردنی هەموو DOM элементەکان لە شوێنی دروست
     const DOM = {
         departmentList: document.getElementById('department-list'),
         modal: document.getElementById('vehicle-modal'),
@@ -43,20 +42,48 @@ document.addEventListener('DOMContentLoaded', () => {
         deselectAllDeptsBtn: document.getElementById('deselect-all-depts-btn'),
     };
 
-    // ------------------- فرمانە سەرەکییەکان -------------------
+    // ########## لێرەدا گۆڕانکاری سەرەکی و چاکسازی کراوە ##########
     function renderUI(searchTerm = '') {
         DOM.departmentList.innerHTML = '';
-        const lowerCaseSearchTerm = searchTerm.toLowerCase();
-        departments.forEach(deptName => {
-            const vehiclesInDept = Object.values(vehicleData).filter(v => v.department === deptName).filter(v => {
+        const trimmedSearchTerm = searchTerm.trim();
+        
+        // فەنکشنی پشکنینی زیرەک
+        const isPureNumber = (str) => {
+            if (str === '') return false; // بۆ ئەوەی بۆکسی بەتاڵ وەک ژمارە حیساب نەکات
+            return /^\d+$/.test(str);
+        };
+
+        let filterFunction;
+
+        if (isPureNumber(trimmedSearchTerm)) {
+            // شێوازی ١: ئەگەر تەنها ژمارە نووسرا، بەدوای ژمارەی تەواودا بگەڕێ
+            filterFunction = v => {
+                // (v.vehicleNumber || '') دڵنیایی دەدات کە ئەگەر خانەکە بەتاڵ بوو هەڵە ڕوونادات
+                return (v.vehicleNumber || '').toString().trim() === trimmedSearchTerm;
+            }
+        } else {
+            // شێوازی ٢: ئەگەر پیت یان تێکەڵاو بوو، گەڕانی گشتی بکە
+            const lowerCaseSearchTerm = trimmedSearchTerm.toLowerCase();
+            filterFunction = v => {
                 if (!lowerCaseSearchTerm) return true;
-                return ((v.vehicleType && v.vehicleType.toLowerCase().includes(lowerCaseSearchTerm)) ||
-                    (v.vehicleNumber && v.vehicleNumber.toLowerCase().includes(lowerCaseSearchTerm)) ||
-                    (v.userName && v.userName.toLowerCase().includes(lowerCaseSearchTerm)) ||
-                    (v.vehicleModel && v.vehicleModel.toString().toLowerCase().includes(lowerCaseSearchTerm)) ||
-                    (v.recipientParty && v.recipientParty.toLowerCase().includes(lowerCaseSearchTerm)));
-            });
-            if (searchTerm && vehiclesInDept.length === 0) return;
+                // بەکارهێنانی (v.fieldName || '') بۆ خۆپاراستن لە هەڵە
+                return (
+                    ((v.vehicleType || '').toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    ((v.vehicleNumber || '').toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    ((v.userName || '').toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    ((v.vehicleModel || '').toString().toLowerCase().includes(lowerCaseSearchTerm)) ||
+                    ((v.recipientParty || '').toLowerCase().includes(lowerCaseSearchTerm))
+                );
+            };
+        }
+
+        departments.forEach(deptName => {
+            const vehiclesInDept = Object.values(vehicleData)
+                .filter(v => v.department === deptName)
+                .filter(filterFunction);
+
+            if (trimmedSearchTerm && vehiclesInDept.length === 0) return;
+            
             const deptId = `dept-${departments.indexOf(deptName)}`;
             const departmentDiv = document.createElement('div');
             departmentDiv.className = 'department';
@@ -94,6 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSummaryCards();
         addEventListenersToButtons();
     }
+    
+    // ... هەموو فەنکشنەکانی تر وەک خۆیانن و هیچ گۆڕانکارییەکیان تێدا نەکراوە ...
 
     function updateSummaryCards() {
         const allVehicles = Object.values(vehicleData);
@@ -293,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(vehicleData));
     }
 
-    // --- بەستنەوەی فرمانەکان بە دوگمەکانەوە ---
     DOM.addNewVehicleBtn.addEventListener('click', () => openModal());
     DOM.closeModalBtn.addEventListener('click', closeModal);
     DOM.vehicleForm.addEventListener('submit', handleFormSubmit);
@@ -306,9 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         const dataStr = JSON.stringify(vehicleData, null, 2);
-        const dataBlob = new Blob([dataStr], {
-            type: 'application/json'
-        });
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(dataBlob);
         const link = document.createElement('a');
         link.href = url;
@@ -337,7 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.value = '';
     });
 
-    // --- فرمانەکانی مۆداڵی ڕاپۆرت ---
     function openReportModal() {
         DOM.reportDepartmentList.innerHTML = '';
         departments.forEach(deptName => {
@@ -383,6 +408,5 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target == DOM.reportModal) closeReportModal();
     });
 
-    // ------------------- دەستپێکردنی سیستەمەکە -------------------
     renderUI();
 });

@@ -5,108 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی بەڕێوەبردنی ئۆتۆمبێلەکان - پارێزگای هەولێر</title>
     <style>
-        :root {
-            --primary-color: #2a6fdb;
-            --primary-rgb: 42, 111, 219;
-            --secondary-color: #6a7185;
-            --background-color: #f7f9fc;
-            --card-background: #ffffff;
-            --text-color: #2c3e50;
-            --header-gradient: linear-gradient(135deg, #2a6fdb 0%, #1e52a1 100%);
-            --success-color: #1abc9c;
-            --danger-color: #e74c3c;
-            --info-color: #3498db;
-            --warning-color: #f1c40f;
-            --border-color: #e3e6f0;
-            --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
-            --shadow-md: 0 .5rem 1rem rgba(0,0,0,.1);
-            --border-radius-md: 12px;
-            --border-radius-sm: 8px;
-        }
-
+        /* ... هەموو ستایلەکان وەک خۆیانن ... */
+        :root { --primary-color: #2a6fdb; --primary-rgb: 42, 111, 219; --secondary-color: #6a7185; --background-color: #f7f9fc; --card-background: #ffffff; --text-color: #2c3e50; --header-gradient: linear-gradient(135deg, #2a6fdb 0%, #1e52a1 100%); --success-color: #1abc9c; --danger-color: #e74c3c; --info-color: #3498db; --warning-color: #f1c40f; --border-color: #e3e6f0; --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075); --shadow-md: 0 .5rem 1rem rgba(0,0,0,.1); --border-radius-md: 12px; --border-radius-sm: 8px; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            direction: rtl;
-            font-weight: 400;
-        }
-
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-color); color: var(--text-color); direction: rtl; font-weight: 400; }
         .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
-
-        .header {
-            background: var(--header-gradient);
-            color: white;
-            padding: 30px;
-            border-radius: var(--border-radius-md);
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow-md);
-        }
+        .header { background: var(--header-gradient); color: white; padding: 30px; border-radius: var(--border-radius-md); text-align: center; margin-bottom: 30px; box-shadow: var(--shadow-md); }
         .header h1 { font-size: 2.2em; margin-bottom: 10px; font-weight: 700; }
         .header p { font-size: 1.1em; opacity: 0.9; }
-
         .search-bar { margin: 30px 0; }
-        .search-bar input {
-            width: 100%;
-            padding: 16px 20px;
-            font-size: 1.1em;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            transition: border-color 0.3s, box-shadow 0.3s;
-            background-color: var(--card-background);
-        }
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.25);
-        }
-
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        .card {
-            background: var(--card-background);
-            padding: 25px;
-            border-radius: var(--border-radius-md);
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            border-top: 4px solid var(--primary-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
+        .search-bar input { width: 100%; padding: 16px 20px; font-size: 1.1em; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); transition: border-color 0.3s, box-shadow 0.3s; background-color: var(--card-background); }
+        .search-bar input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.25); }
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        .card { background: var(--card-background); padding: 25px; border-radius: var(--border-radius-md); text-align: center; box-shadow: var(--shadow-sm); border-top: 4px solid var(--primary-color); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
         .card h3 { font-size: 1.1em; color: var(--secondary-color); margin-bottom: 15px; font-weight: 500; }
         .card .count { font-size: 2.8em; font-weight: 700; color: var(--primary-color); }
         .card.motorcycle { border-color: var(--success-color); }
         .card.motorcycle .count { color: var(--success-color); }
         .card.stopped { border-color: var(--danger-color); }
         .card.stopped .count { color: var(--danger-color); }
-
         .main-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
-
-        .btn {
-            padding: 12px 25px;
-            font-size: 1em;
-            font-weight: 500;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            text-decoration: none;
-        }
+        .btn { padding: 12px 25px; font-size: 1em; font-weight: 500; border: none; border-radius: var(--border-radius-sm); cursor: pointer; transition: all 0.2s ease; color: white; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-decoration: none; }
         .btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn:active { transform: translateY(0); }
         .btn-sm { padding: 8px 12px; font-size: 0.9em; }
@@ -115,305 +35,43 @@
         .btn-danger { background-color: var(--danger-color); }
         .btn-info { background-color: var(--info-color); }
         .btn-warning { background-color: var(--warning-color); color: var(--text-color); }
-
         .accordion .department { margin-bottom: 15px; }
-        .accordion .department-header {
-            background: var(--card-background);
-            padding: 20px;
-            cursor: pointer;
-            border-radius: var(--border-radius-md);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border-color);
-            transition: background-color 0.3s, border-color 0.3s, border-radius 0.3s;
-        }
-        .accordion .department-header:hover {
-            background-color: rgba(var(--primary-rgb), 0.05);
-            border-color: rgba(var(--primary-rgb), 0.4);
-        }
-        .accordion .department-header.active {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
+        .accordion .department-header { background: var(--card-background); padding: 20px; cursor: pointer; border-radius: var(--border-radius-md); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s, border-radius 0.3s; }
+        .accordion .department-header:hover { background-color: rgba(var(--primary-rgb), 0.05); border-color: rgba(var(--primary-rgb), 0.4); }
+        .accordion .department-header.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
         .accordion .department-header h2 { font-size: 1.2em; font-weight: 700; }
-        
-        .accordion .department-header .arrow {
-            font-size: 0;
-            position: relative;
-            width: 24px;
-            height: 24px;
-            display: inline-block;
-        }
-        .accordion .department-header .arrow::before {
-            content: '+';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--primary-color);
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 1;
-            transition: transform 0.3s ease;
-        }
-        .accordion .department-header.active .arrow::before {
-            content: '−';
-            transform: translate(-50%, -50%);
-        }
-
-        .accordion .department-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out;
-            background: var(--card-background);
-            border: 1px solid var(--border-color);
-            border-top: none;
-            border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
-            padding: 0 20px;
-        }
-
+        .accordion .department-header .arrow { font-size: 0; position: relative; width: 24px; height: 24px; display: inline-block; }
+        .accordion .department-header .arrow::before { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--primary-color); font-size: 28px; font-weight: 700; line-height: 1; transition: transform 0.3s ease; }
+        .accordion .department-header.active .arrow::before { content: '−'; transform: translate(-50%, -50%); }
+        .accordion .department-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; background: var(--card-background); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 var(--border-radius-md) var(--border-radius-md); padding: 0 20px; }
         .vehicle-table { width: 100%; border-collapse: collapse; margin: 0; }
         .vehicle-table th, .vehicle-table td { padding: 15px; text-align: right; border-bottom: 1px solid var(--border-color); }
-        .vehicle-table th {
-            background-color: #f8f9fa;
-            font-weight: 700;
-            color: var(--secondary-color);
-            text-transform: uppercase;
-            font-size: 0.9em;
-            letter-spacing: 0.5px;
-        }
+        .vehicle-table th { background-color: #f8f9fa; font-weight: 700; color: var(--secondary-color); text-transform: uppercase; font-size: 0.9em; letter-spacing: 0.5px; }
         .vehicle-table tr:last-child td { border-bottom: none; }
         .vehicle-table tbody tr:hover { background-color: #f7f9fc; }
         .vehicle-table .actions { display: flex; gap: 8px; flex-wrap: wrap; }
         .vehicle-table .actions .btn { box-shadow: none; }
-
         .footer-credit { text-align: center; color: var(--secondary-color); padding: 30px; margin-top: 40px; font-size: 0.9em; }
-
-        /* Modal Styles */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
-        .modal-content {
-            background-color: var(--background-color);
-            margin: 5% auto;
-            padding: 40px;
-            border: none;
-            width: 90%;
-            max-width: 850px;
-            border-radius: var(--border-radius-md);
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+        .modal-content { background-color: var(--background-color); margin: 5% auto; padding: 40px; border: none; width: 90%; max-width: 850px; border-radius: var(--border-radius-md); position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .close-btn { color: #aaa; position: absolute; left: 20px; top: 15px; font-size: 32px; font-weight: bold; cursor: pointer; transition: color 0.2s; }
         .close-btn:hover { color: var(--danger-color); }
-
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .form-grid .form-group { display: flex; flex-direction: column; }
         .form-grid label { margin-bottom: 8px; font-weight: 500; }
-        .form-grid input, .form-grid select, .form-grid textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            font-size: 1em;
-            background-color: var(--card-background);
-        }
-        .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
-        }
+        .form-grid input, .form-grid select, .form-grid textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); font-size: 1em; background-color: var(--card-background); }
+        .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2); }
         .form-group.full-width { grid-column: 1 / -1; }
-
-        #expense-list {
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            background-color: var(--card-background);
-        }
-        #expense-list .expense-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 2fr auto;
-            gap: 10px;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            align-items: center;
-        }
+        #expense-list { margin-top: 15px; max-height: 200px; overflow-y: auto; padding: 15px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background-color: var(--card-background); }
+        #expense-list .expense-item { display: grid; grid-template-columns: 1fr 1fr 1fr 2fr auto; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; align-items: center; }
         #expense-list .expense-item:last-child { border-bottom: none; }
         #expense-list input { font-size: 0.9em; padding: 8px; }
-
-        /* Print Styles */
-        @media print {
-            body { background-color: #fff; }
-            body * { visibility: hidden; }
-            #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
-            .btn, .search-bar, .main-controls, .accordion .arrow, .modal-content .close-btn, #modal-actions { display: none !important; }
-            .modal { display: block !important; position: relative; background-color: transparent; }
-            .modal-content { margin: 0; width: 100%; box-shadow: none; border: none; padding: 0; }
-        }
-
-        /* Improved Print Styles */
-        @media print {
-            .print-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-                font-size: 10pt;
-            }
-            .print-table th, 
-            .print-table td {
-                border: 1px solid #333;
-                padding: 6px;
-                text-align: right;
-            }
-            .print-table th {
-                background-color: #eee;
-                font-weight: bold;
-            }
-            .print-header {
-                text-align: center;
-                margin-bottom: 25px;
-            }
-            .department-title {
-                background-color: #eee;
-                padding: 5px;
-                margin: 15px 0 5px 0;
-                font-size: 12pt;
-                font-weight: bold;
-            }
-            .page-break { page-break-after: always; }
-        }
-
-        /* Style for the report selection modal */
-        .department-checkbox-item {
-            display: block;
-            padding: 8px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .department-checkbox-item:hover {
-            background-color: #e9ecef;
-        }
-        .department-checkbox-item input {
-            margin-left: 10px;
-        }
-        
-        /* ======================================================= */
-        /*               ستايلەکان بۆ مۆبایل (Responsive)              */
-        /* ======================================================= */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 10px;
-                margin: 10px auto;
-            }
-
-            .header {
-                padding: 20px;
-                margin-bottom: 20px;
-            }
-            .header h1 {
-                font-size: 1.8em;
-            }
-            .header p {
-                font-size: 1em;
-            }
-
-            .main-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .main-controls > div {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-            .main-controls .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .accordion .department-header h2 {
-                font-size: 1.1em;
-            }
-
-            .vehicle-table thead {
-                display: none;
-            }
-
-            .vehicle-table, .vehicle-table tbody, .vehicle-table tr, .vehicle-table td {
-                display: block;
-                width: 100%;
-            }
-
-            .vehicle-table tr {
-                margin-bottom: 15px;
-                border: 1px solid var(--border-color);
-                border-radius: var(--border-radius-sm);
-                background-color: var(--card-background);
-                padding: 10px;
-            }
-            
-            .vehicle-table td {
-                text-align: right;
-                padding-right: 50%; /* بۆشایی بۆ ناوەڕۆک لە RTL */
-                position: relative;
-                border: none;
-                border-bottom: 1px solid #eee;
-                padding-top: 8px;
-                padding-bottom: 8px;
-            }
-
-            .vehicle-table tr td:last-child {
-                border-bottom: none;
-            }
-
-            .vehicle-table td::before {
-                content: attr(data-label);
-                position: absolute;
-                right: 15px;
-                width: 45%;
-                padding-left: 10px;
-                font-weight: bold;
-                text-align: right;
-                color: var(--primary-color);
-            }
-
-            .vehicle-table td.actions {
-                padding: 10px 0;
-                padding-right: 0;
-            }
-            
-            .vehicle-table .actions {
-                justify-content: flex-start;
-            }
-            
-            .vehicle-table td.actions::before {
-                display: none; /* شاردنەوەی "کردارەکان" */
-            }
-
-            .modal-content {
-                padding: 20px;
-                margin: 10% auto;
-                width: 95%;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            #expense-list .expense-item {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            #expense-list .expense-item .remove-expense-btn {
-                width: 100%;
-                margin-top: 5px;
-            }
-        }
+        @media print { body { background-color: #fff; } body * { visibility: hidden; } #print-area, #print-area * { visibility: visible; } #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; } .btn, .search-bar, .main-controls, .accordion .arrow, .modal-content .close-btn, #modal-actions { display: none !important; } .modal { display: block !important; position: relative; background-color: transparent; } .modal-content { margin: 0; width: 100%; box-shadow: none; border: none; padding: 0; } }
+        @media print { .print-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 10pt; } .print-table th, .print-table td { border: 1px solid #333; padding: 6px; text-align: right; } .print-table th { background-color: #eee; font-weight: bold; } .print-header { text-align: center; margin-bottom: 25px; } .department-title { background-color: #eee; padding: 5px; margin: 15px 0 5px 0; font-size: 12pt; font-weight: bold; } .page-break { page-break-after: always; } }
+        .department-checkbox-item { display: block; padding: 8px 10px; cursor: pointer; border-radius: 5px; }
+        .department-checkbox-item:hover { background-color: #e9ecef; }
+        .department-checkbox-item input { margin-left: 10px; }
+        @media (max-width: 768px) { .container { padding: 0 10px; margin: 10px auto; } .header { padding: 20px; margin-bottom: 20px; } .header h1 { font-size: 1.8em; } .header p { font-size: 1em; } .main-controls { flex-direction: column; align-items: stretch; } .main-controls > div { display: flex; flex-direction: column; gap: 10px; } .main-controls .btn { width: 100%; justify-content: center; } .accordion .department-header h2 { font-size: 1.1em; } .vehicle-table thead { display: none; } .vehicle-table, .vehicle-table tbody, .vehicle-table tr, .vehicle-table td { display: block; width: 100%; } .vehicle-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background-color: var(--card-background); padding: 10px; } .vehicle-table td { text-align: right; padding-right: 50%; position: relative; border: none; border-bottom: 1px solid #eee; padding-top: 8px; padding-bottom: 8px; } .vehicle-table tr td:last-child { border-bottom: none; } .vehicle-table td::before { content: attr(data-label); position: absolute; right: 15px; width: 45%; padding-left: 10px; font-weight: bold; text-align: right; color: var(--primary-color); } .vehicle-table td.actions { padding: 10px 0; padding-right: 0; } .vehicle-table .actions { justify-content: flex-start; } .vehicle-table td.actions::before { display: none; } .modal-content { padding: 20px; margin: 10% auto; width: 95%; } .form-grid { grid-template-columns: 1fr; } #expense-list .expense-item { grid-template-columns: 1fr; gap: 8px; } #expense-list .expense-item .remove-expense-btn { width: 100%; margin-top: 5px; } }
     </style>
 </head>
 <body>
@@ -421,13 +79,15 @@
     <div class="container">
         <header class="header">
             <h1>سیستەمی بەڕێوەبردنی ئۆتۆمبێلەکان</h1>
-            <p>پارێزگای هەولێر</p>
+            <p style="font-size: 1.5em; font-weight: 700;">پارێـــــــزگــــای هــــەولـــــێــر</p>
         </header>
 
         <div class="search-bar">
-            <input type="text" id="search-input" placeholder="گەڕان بەپێی ژمارەی ئۆتۆمبێل، ناوی بەکارهێنەر، جۆری ئۆتۆمبێل...">
+            <!-- ########## گۆڕانکاری لێرەدایە ########## -->
+            <input type="text" id="search-input" placeholder="گەڕان بەپێی ژمارەی تەواوی ئۆتۆمبێل، ناو، یان جۆری ئۆتۆمبێل...">
         </div>
 
+        <!-- ... ostatak HTML koda ostaje isti ... -->
         <div class="summary-cards">
             <div class="card"><h3 class="card-title">کۆی گشتی ئۆتۆمبێلەکان</h3><div class="count" id="total-cars-count">0</div></div>
             <div class="card motorcycle"><h3 class="card-title">کۆی گشتی ماتۆڕسکیلەکان</h3><div class="count" id="total-motorcycles-count">0</div></div>
@@ -448,8 +108,8 @@
 
         <div class="footer-credit" dir="ltr">&copy; 2025 DIRECTORATE OF IT-ERBIL GOVERNORATE</div>
     </div>
-
-    <!-- Add/Edit/View Vehicle Modal -->
+    
+    <!-- Modals and other elements remain the same -->
     <div id="vehicle-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -484,11 +144,7 @@
             </form>
         </div>
     </div>
-    
-    <!-- Print Area -->
     <div id="print-area" style="display: none;"></div>
-
-    <!-- Report Selection Modal -->
     <div id="report-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -497,9 +153,7 @@
                 <button id="select-all-depts-btn" class="btn btn-sm btn-success">هەڵبژاردنی هەموو</button>
                 <button id="deselect-all-depts-btn" class="btn btn-sm btn-warning">هەڵنەبژاردنی هیچ کام</button>
             </div>
-            <div id="report-department-list" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px; border-radius: var(--border-radius-sm);">
-                <!-- لیستەکە لێرە لەلایەن جاڤاسکریپتەوە پڕ دەکرێتەوە -->
-            </div>
+            <div id="report-department-list" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); padding: 15px; border-radius: var(--border-radius-sm);"></div>
             <div id="modal-actions" style="margin-top: 20px;">
                 <button id="print-selected-btn" class="btn btn-primary">چاپکردنی هەڵبژێردراوەکان</button>
             </div>
