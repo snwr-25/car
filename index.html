@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی بەڕێوەبردنی ئۆتۆمبێلەکان - پارێزگای هەولێر</title>
     <style>
-        /* ... ستایلەکانی تر وەک خۆیانن ... */
         :root { --primary-color: #2a6fdb; --primary-rgb: 42, 111, 219; --secondary-color: #6a7185; --background-color: #f7f9fc; --card-background: #ffffff; --text-color: #2c3e50; --header-gradient: linear-gradient(135deg, #2a6fdb 0%, #1e52a1 100%); --success-color: #1abc9c; --danger-color: #e74c3c; --info-color: #3498db; --warning-color: #f1c40f; --border-color: #e3e6f0; --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075); --shadow-md: 0 .5rem 1rem rgba(0,0,0,.1); --border-radius-md: 12px; --border-radius-sm: 8px; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-color); color: var(--text-color); direction: rtl; font-weight: 400; }
@@ -16,24 +15,33 @@
         .search-bar { margin: 30px 0; }
         .search-bar input { width: 100%; padding: 16px 20px; font-size: 1.1em; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); transition: border-color 0.3s, box-shadow 0.3s; background-color: var(--card-background); }
         .search-bar input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.25); }
-        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        
+        .summary-cards { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 30px; 
+        }
+        @media (min-width: 1350px) {
+            .summary-cards {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+        
         .card { background: var(--card-background); padding: 25px; border-radius: var(--border-radius-md); text-align: center; box-shadow: var(--shadow-sm); border-top: 4px solid var(--primary-color); transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
         .card h3 { font-size: 1.1em; color: var(--secondary-color); margin-bottom: 15px; font-weight: 500; }
         .card .count { font-size: 2.8em; font-weight: 700; color: var(--primary-color); }
         .card.motorcycle { border-color: var(--success-color); }
         .card.motorcycle .count { color: var(--success-color); }
-        /* ########## گۆڕانکاری لێرەدایە: ڕەنگی کارتی ڕاگیراوەکان بۆ ڕەش گۆڕدرا ########## */
         .card.stopped { border-color: var(--text-color); }
         .card.stopped .count { color: var(--text-color); }
-        /* ########## گۆڕانکاری لێرەدایە: ڕەنگی کارتی زۆرترین خەرجی بۆ سوور گۆڕدرا ########## */
         .card.warning { border-color: var(--danger-color); }
         .card.warning .count { color: var(--danger-color); }
         .main-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
         .btn { padding: 12px 25px; font-size: 1em; font-weight: 500; border: none; border-radius: var(--border-radius-sm); cursor: pointer; transition: all 0.2s ease; color: white; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-decoration: none; }
         .btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn:active { transform: translateY(0); }
-        /* ########## ستایلی نوێ بۆ گەورەکردنی ئایکۆنی دوگمە ########## */
         .btn .btn-icon {
             font-size: 1.5em;
             font-weight: 700;
@@ -50,14 +58,13 @@
         .accordion .department-header:hover { background-color: rgba(var(--primary-rgb), 0.05); border-color: rgba(var(--primary-rgb), 0.4); }
         .accordion .department-header.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
         .accordion .department-header h2 { font-size: 1.2em; font-weight: 700; display: flex; align-items: center; justify-content: space-between; width: 100%; }
-        /* ########## ستایلی نوێ بۆ جوانکردنی ژمارەی ئۆتۆمبێلی بەشەکان ########## */
         .accordion .department-header .dept-count { 
             font-size: 1.1em;
             font-weight: 900;
             color: var(--primary-color);
             background-color: rgba(var(--primary-rgb), 0.1);
             padding: 4px 12px;
-            border-radius: 16px; /* Pill shape */
+            border-radius: 16px;
             margin-right: 15px;
             min-width: 40px;
             text-align: center;
@@ -114,9 +121,22 @@
         </div>
 
         <div class="summary-cards">
-            <div class="card"><h3 class="card-title">کۆی گشتی ئۆتۆمبێلەکان</h3><div class="count" id="total-cars-count">0</div></div>
-            <div class="card motorcycle"><h3 class="card-title">کۆی گشتی ماتۆڕسکیلەکان</h3><div class="count" id="total-motorcycles-count">0</div></div>
-            <div class="card stopped"><h3 class="card-title">ئۆتۆمبێلە ڕاگیراوەکان</h3><div class="count" id="total-stopped-count">0</div></div>
+            <div class="card">
+                <h3 class="card-title">کۆی گشتی (پارێزگا)</h3>
+                <div class="count" id="main-total-count">0</div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">کۆی گشتی</h3>
+                <div class="count" id="total-cars-count">0</div>
+            </div>
+            <div class="card motorcycle">
+                <h3 class="card-title">کۆی گشتی ماتۆڕسکیلەکان</h3>
+                <div class="count" id="total-motorcycles-count">0</div>
+            </div>
+            <div class="card stopped">
+                <h3 class="card-title">ئۆتۆمبێلە ڕاگیراوەکان</h3>
+                <div class="count" id="total-stopped-count">0</div>
+            </div>
             <div class="card warning">
                 <h3 class="card-title">زۆرترین خەرجی</h3>
                 <div class="count" id="highest-expense-amount" style="font-size: 2.2em; margin-bottom: 5px;">0</div>
@@ -125,7 +145,6 @@
         </div>
 
         <div class="main-controls">
-            <!-- ########## گۆڕانکاری لێرەدایە: زیادکردنی span بۆ ئایکۆنەکە ########## -->
             <button class="btn btn-primary" id="add-new-vehicle-btn"><span class="btn-icon">+</span> زیادکردنی ئۆتۆمبێلی نوێ</button>
             <div>
                 <button class="btn btn-info" id="print-report-btn">چاپکردنی ڕاپۆرتی گشتی</button>

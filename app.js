@@ -14,6 +14,17 @@ document.addEventListener('DOMContentLoaded', () => {
         'ئۆتۆمبێلەكانی پارێزگای هه‌ولێر - میلاكی ئه‌نجومه‌نی وه‌زیران', 'ئیدارەی سۆران – نووسینگەی تایبەت', 'ئۆتۆمبیل تۆمار نه‌كراوه‌كان',
         'دیوانی پارێزگا - كارگێری گشتی  + فه‌رمانگه‌ جیاوازەكانی- ماتۆرسكیل', 'فه‌رمانگه‌  جیاوازەكان له‌سه‌ر پارێزگای هه‌ولێر - هاته‌خوار'
     ];
+
+    const excludedDepartmentsForMainTotal = [
+        'Ejcc پارێزگا - میلاكی وه‌زاره‌تی ناوخۆ',
+        'ئۆتۆمبێلە راگیراوەكان‌ له‌ گه‌راجی ناوچه‌ی پیشه‌سازی  له‌كاركه‌وتوون سه‌ر به‌ EJCC  يـــــــــــــــــــه',
+        'ئۆتۆمبێلەكانی لیژنه‌ی زێده‌رۆیی پارێزگای هه‌ولێر- میلاكی وه‌زاره‌تی ناوخۆ',
+        'ئۆتۆمبێلەكانی پارێزگای هه‌ولێر - میلاكی ئه‌نجومه‌نی وه‌زیران',
+        'ئیدارەی سۆران – نووسینگەی تایبەت',
+        'فه‌رمانگه‌  جیاوازەكان له‌سه‌ر پارێزگای هه‌ولێر - هاته‌خوار',
+        'بەرێوەبەری ناحیەكان - میلاكی وه‌زاره‌تی ناوخۆ'
+    ];
+    
     const STORAGE_KEY = 'erbil_gov_vehicles_data_v3';
     let vehicleData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 
@@ -72,16 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         departments.forEach(deptName => {
-            // ########## گۆڕانکاری لێرەدایە: زیادکردنی sort ##########
             const vehiclesInDept = Object.values(vehicleData)
                 .filter(v => v.department === deptName)
                 .filter(filterFunction)
                 .sort((a, b) => {
-                    // ئەم فەنکشنە بەشی ژمارەیی لە 'ژمارەی ئۆتۆمبێل' دەردەهێنێت بۆ ڕیزکردن
                     const parseNumeric = (str) => {
-                        // ئەگەر خانەکە بەتاڵ بوو یان ژمارەی تێدا نەبوو، دەیخاتە کۆتایی لیستەکەوە
                         if (typeof str !== 'string' || !str) return Infinity; 
-                        const match = str.match(/\d+/); // یەکەم گرووپی ژمارە دەدۆزێتەوە
+                        const match = str.match(/\d+/);
                         return match ? parseInt(match[0], 10) : Infinity;
                     };
 
@@ -133,11 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function updateSummaryCards() {
         const allVehicles = Object.values(vehicleData);
+
+        const mainTotalVehicles = allVehicles.filter(v => !excludedDepartmentsForMainTotal.includes(v.department));
+        document.getElementById('main-total-count').textContent = mainTotalVehicles.length;
         
+        document.getElementById('total-cars-count').textContent = allVehicles.length;
+
         const motorcycles = allVehicles.filter(v => v.department && v.department.includes('ماتۆرسكیل'));
-        const stoppedVehicles = allVehicles.filter(v => v.department && v.department.includes('راگیراوەكان‌'));
-        document.getElementById('total-cars-count').textContent = allVehicles.length - motorcycles.length;
         document.getElementById('total-motorcycles-count').textContent = motorcycles.length;
+
+        const stoppedVehicles = allVehicles.filter(v => v.department && v.department.includes('راگیراوەكان‌'));
         document.getElementById('total-stopped-count').textContent = stoppedVehicles.length;
 
         let highestExpenseVehicle = null;
@@ -296,14 +309,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ########## گۆڕانکاری لێرەدایە: زیادکردنی پەیامی دڵنیابوونەوە پێش سڕینەوەی خەرجی ##########
     function renderExpenseItem(expense = {}, isViewOnly = false) {
         const item = document.createElement('div');
         item.className = 'expense-item';
         item.innerHTML = `<input type="number" class="expense-amount" placeholder="بڕی پارە" value="${expense.amount || ''}" ${isViewOnly ? 'disabled' : ''}><input type="date" class="expense-date" placeholder="بەروار" value="${expense.date || ''}" ${isViewOnly ? 'disabled' : ''}><input type="text" class="expense-receipt" placeholder="ژ. پسوڵە" value="${expense.receipt || ''}" ${isViewOnly ? 'disabled' : ''}><input type="text" class="expense-reason" placeholder="هۆکاری خەرجکردن" value="${expense.reason || ''}" ${isViewOnly ? 'disabled' : ''}><button type="button" class="btn btn-sm btn-danger remove-expense-btn" ${isViewOnly ? 'style="display:none;"' : ''}>X</button>`;
+        
         item.querySelector('.remove-expense-btn').addEventListener('click', () => {
-            item.remove();
-            updateTotalExpenses();
+            // پەیامی دڵنیابوونەوە
+            if (confirm('دڵنیایت لە سڕینەوەی ئەم خەرجییە؟')) {
+                item.remove();
+                updateTotalExpenses();
+            }
         });
+        
         item.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', updateTotalExpenses);
         });
