@@ -42,31 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
         deselectAllDeptsBtn: document.getElementById('deselect-all-depts-btn'),
     };
 
-    // ########## لێرەدا گۆڕانکاری سەرەکی و چاکسازی کراوە ##########
     function renderUI(searchTerm = '') {
         DOM.departmentList.innerHTML = '';
         const trimmedSearchTerm = searchTerm.trim();
         
-        // فەنکشنی پشکنینی زیرەک
         const isPureNumber = (str) => {
-            if (str === '') return false; // بۆ ئەوەی بۆکسی بەتاڵ وەک ژمارە حیساب نەکات
+            if (str === '') return false;
             return /^\d+$/.test(str);
         };
 
         let filterFunction;
 
         if (isPureNumber(trimmedSearchTerm)) {
-            // شێوازی ١: ئەگەر تەنها ژمارە نووسرا، بەدوای ژمارەی تەواودا بگەڕێ
             filterFunction = v => {
-                // (v.vehicleNumber || '') دڵنیایی دەدات کە ئەگەر خانەکە بەتاڵ بوو هەڵە ڕوونادات
                 return (v.vehicleNumber || '').toString().trim() === trimmedSearchTerm;
             }
         } else {
-            // شێوازی ٢: ئەگەر پیت یان تێکەڵاو بوو، گەڕانی گشتی بکە
             const lowerCaseSearchTerm = trimmedSearchTerm.toLowerCase();
             filterFunction = v => {
                 if (!lowerCaseSearchTerm) return true;
-                // بەکارهێنانی (v.fieldName || '') بۆ خۆپاراستن لە هەڵە
                 return (
                     ((v.vehicleType || '').toLowerCase().includes(lowerCaseSearchTerm)) ||
                     ((v.vehicleNumber || '').toLowerCase().includes(lowerCaseSearchTerm)) ||
@@ -78,9 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         departments.forEach(deptName => {
+            // ########## گۆڕانکاری لێرەدایە: زیادکردنی sort ##########
             const vehiclesInDept = Object.values(vehicleData)
                 .filter(v => v.department === deptName)
-                .filter(filterFunction);
+                .filter(filterFunction)
+                .sort((a, b) => {
+                    // ئەم فەنکشنە بەشی ژمارەیی لە 'ژمارەی ئۆتۆمبێل' دەردەهێنێت بۆ ڕیزکردن
+                    const parseNumeric = (str) => {
+                        // ئەگەر خانەکە بەتاڵ بوو یان ژمارەی تێدا نەبوو، دەیخاتە کۆتایی لیستەکەوە
+                        if (typeof str !== 'string' || !str) return Infinity; 
+                        const match = str.match(/\d+/); // یەکەم گرووپی ژمارە دەدۆزێتەوە
+                        return match ? parseInt(match[0], 10) : Infinity;
+                    };
+
+                    const numA = parseNumeric(a.vehicleNumber);
+                    const numB = parseNumeric(b.vehicleNumber);
+                    
+                    return numA - numB;
+                });
 
             if (trimmedSearchTerm && vehiclesInDept.length === 0) return;
             
@@ -95,13 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="department-content" id="${deptId}">
                     <table class="vehicle-table">
                         <thead>
-                            <tr><th>جۆری ئۆتۆمبێل</th><th>ژمارە</th><th>مۆدێل</th><th>لایەنی وەرگر</th><th>بەکارهێنەر</th><th>کردارەکان</th></tr>
+                            <tr><th>جۆری ئۆتۆمبێل</th><th>ژمارەی ئۆتۆمبێل</th><th>مۆدێل</th><th>لایەنی وەرگر</th><th>بەکارهێنەر</th><th>کردارەکان</th></tr>
                         </thead>
                         <tbody>
                             ${vehiclesInDept.map(vehicle => `
                                 <tr data-id="${vehicle.id}">
                                     <td data-label="جۆری ئۆتۆمبێل">${vehicle.vehicleType || ''}</td>
-                                    <td data-label="ژمارە">${vehicle.vehicleNumber || ''}</td>
+                                    <td data-label="ژمارەی ئۆتۆمبێل">${vehicle.vehicleNumber || ''}</td>
                                     <td data-label="مۆدێل">${vehicle.vehicleModel || ''}</td>
                                     <td data-label="لایەنی وەرگر">${vehicle.recipientParty || ''}</td>
                                     <td data-label="بەکارهێنەر">${vehicle.userName || ''}</td>
@@ -122,15 +131,36 @@ document.addEventListener('DOMContentLoaded', () => {
         addEventListenersToButtons();
     }
     
-    // ... هەموو فەنکشنەکانی تر وەک خۆیانن و هیچ گۆڕانکارییەکیان تێدا نەکراوە ...
-
     function updateSummaryCards() {
         const allVehicles = Object.values(vehicleData);
+        
         const motorcycles = allVehicles.filter(v => v.department && v.department.includes('ماتۆرسكیل'));
         const stoppedVehicles = allVehicles.filter(v => v.department && v.department.includes('راگیراوەكان‌'));
         document.getElementById('total-cars-count').textContent = allVehicles.length - motorcycles.length;
         document.getElementById('total-motorcycles-count').textContent = motorcycles.length;
         document.getElementById('total-stopped-count').textContent = stoppedVehicles.length;
+
+        let highestExpenseVehicle = null;
+        let maxExpense = 0;
+
+        allVehicles.forEach(vehicle => {
+            const totalVehicleExpense = (vehicle.expenses || []).reduce((sum, expense) => sum + (Number(expense.amount) || 0), 0);
+            if (totalVehicleExpense > maxExpense) {
+                maxExpense = totalVehicleExpense;
+                highestExpenseVehicle = vehicle;
+            }
+        });
+
+        const highestAmountEl = document.getElementById('highest-expense-amount');
+        const highestVehicleEl = document.getElementById('highest-expense-vehicle');
+
+        if (highestExpenseVehicle && maxExpense > 0) {
+            highestAmountEl.textContent = maxExpense.toLocaleString();
+            highestVehicleEl.textContent = `ئۆتۆمبیلی ژماره‌: ${highestExpenseVehicle.vehicleNumber || 'نادیار'}`;
+        } else {
+            highestAmountEl.textContent = '0';
+            highestVehicleEl.textContent = 'هیچ خەرجییەک نییە';
+        }
     }
 
     function addEventListenersToButtons() {
@@ -310,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
         departmentsToPrint.forEach(deptName => {
             const vehiclesInDept = Object.values(vehicleData).filter(v => v.department === deptName);
             if (vehiclesInDept.length > 0) {
-                reportHTML += `<div style="page-break-inside: avoid;"><h3 style="background-color: #f0f0f0; padding: 5px; border-right: 3px solid #555; margin-top: 15px;">${deptName} (کۆ: ${vehiclesInDept.length})</h3><table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;"><thead><tr><th>جۆری ئۆتۆمبێل</th><th>ژمارە</th><th>مۆدێل</th><th>لایەنی وەرگر</th><th>بەکارهێنەر</th></tr></thead><tbody>${vehiclesInDept.map(v => `<tr><td>${v.vehicleType || ''}</td><td>${v.vehicleNumber || ''}</td><td>${v.vehicleModel || ''}</td><td>${v.recipientParty || ''}</td><td>${v.userName || ''}</td></tr>`).join('')}</tbody></table></div>`;
+                reportHTML += `<div style="page-break-inside: avoid;"><h3 style="background-color: #f0f0f0; padding: 5px; border-right: 3px solid #555; margin-top: 15px;">${deptName} (کۆ: ${vehiclesInDept.length})</h3><table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;"><thead><tr><th>جۆری ئۆتۆمبێل</th><th>ژمارەی ئۆتۆمبێل</th><th>مۆدێل</th><th>لایەنی وەرگر</th><th>بەکارهێنەر</th></tr></thead><tbody>${vehiclesInDept.map(v => `<tr><td>${v.vehicleType || ''}</td><td>${v.vehicleNumber || ''}</td><td>${v.vehicleModel || ''}</td><td>${v.recipientParty || ''}</td><td>${v.userName || ''}</td></tr>`).join('')}</tbody></table></div>`;
             }
         });
         const printWindow = window.open('', '_blank');

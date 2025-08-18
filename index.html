@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی بەڕێوەبردنی ئۆتۆمبێلەکان - پارێزگای هەولێر</title>
     <style>
-        /* ... هەموو ستایلەکان وەک خۆیانن ... */
+        /* ... ستایلەکانی تر وەک خۆیانن ... */
         :root { --primary-color: #2a6fdb; --primary-rgb: 42, 111, 219; --secondary-color: #6a7185; --background-color: #f7f9fc; --card-background: #ffffff; --text-color: #2c3e50; --header-gradient: linear-gradient(135deg, #2a6fdb 0%, #1e52a1 100%); --success-color: #1abc9c; --danger-color: #e74c3c; --info-color: #3498db; --warning-color: #f1c40f; --border-color: #e3e6f0; --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075); --shadow-md: 0 .5rem 1rem rgba(0,0,0,.1); --border-radius-md: 12px; --border-radius-sm: 8px; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-color); color: var(--text-color); direction: rtl; font-weight: 400; }
@@ -16,19 +16,29 @@
         .search-bar { margin: 30px 0; }
         .search-bar input { width: 100%; padding: 16px 20px; font-size: 1.1em; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); transition: border-color 0.3s, box-shadow 0.3s; background-color: var(--card-background); }
         .search-bar input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.25); }
-        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; margin-bottom: 30px; }
         .card { background: var(--card-background); padding: 25px; border-radius: var(--border-radius-md); text-align: center; box-shadow: var(--shadow-sm); border-top: 4px solid var(--primary-color); transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
         .card h3 { font-size: 1.1em; color: var(--secondary-color); margin-bottom: 15px; font-weight: 500; }
         .card .count { font-size: 2.8em; font-weight: 700; color: var(--primary-color); }
         .card.motorcycle { border-color: var(--success-color); }
         .card.motorcycle .count { color: var(--success-color); }
-        .card.stopped { border-color: var(--danger-color); }
-        .card.stopped .count { color: var(--danger-color); }
+        /* ########## گۆڕانکاری لێرەدایە: ڕەنگی کارتی ڕاگیراوەکان بۆ ڕەش گۆڕدرا ########## */
+        .card.stopped { border-color: var(--text-color); }
+        .card.stopped .count { color: var(--text-color); }
+        /* ########## گۆڕانکاری لێرەدایە: ڕەنگی کارتی زۆرترین خەرجی بۆ سوور گۆڕدرا ########## */
+        .card.warning { border-color: var(--danger-color); }
+        .card.warning .count { color: var(--danger-color); }
         .main-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
         .btn { padding: 12px 25px; font-size: 1em; font-weight: 500; border: none; border-radius: var(--border-radius-sm); cursor: pointer; transition: all 0.2s ease; color: white; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-decoration: none; }
         .btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn:active { transform: translateY(0); }
+        /* ########## ستایلی نوێ بۆ گەورەکردنی ئایکۆنی دوگمە ########## */
+        .btn .btn-icon {
+            font-size: 1.5em;
+            font-weight: 700;
+            line-height: 1;
+        }
         .btn-sm { padding: 8px 12px; font-size: 0.9em; }
         .btn-primary { background-color: var(--primary-color); }
         .btn-success { background-color: var(--success-color); }
@@ -39,8 +49,25 @@
         .accordion .department-header { background: var(--card-background); padding: 20px; cursor: pointer; border-radius: var(--border-radius-md); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); transition: background-color 0.3s, border-color 0.3s, border-radius 0.3s; }
         .accordion .department-header:hover { background-color: rgba(var(--primary-rgb), 0.05); border-color: rgba(var(--primary-rgb), 0.4); }
         .accordion .department-header.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-        .accordion .department-header h2 { font-size: 1.2em; font-weight: 700; }
-        .accordion .department-header .arrow { font-size: 0; position: relative; width: 24px; height: 24px; display: inline-block; }
+        .accordion .department-header h2 { font-size: 1.2em; font-weight: 700; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        /* ########## ستایلی نوێ بۆ جوانکردنی ژمارەی ئۆتۆمبێلی بەشەکان ########## */
+        .accordion .department-header .dept-count { 
+            font-size: 1.1em;
+            font-weight: 900;
+            color: var(--primary-color);
+            background-color: rgba(var(--primary-rgb), 0.1);
+            padding: 4px 12px;
+            border-radius: 16px; /* Pill shape */
+            margin-right: 15px;
+            min-width: 40px;
+            text-align: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .accordion .department-header:hover .dept-count {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .accordion .department-header .arrow { font-size: 0; position: relative; width: 24px; height: 24px; display: inline-block; flex-shrink: 0; }
         .accordion .department-header .arrow::before { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--primary-color); font-size: 28px; font-weight: 700; line-height: 1; transition: transform 0.3s ease; }
         .accordion .department-header.active .arrow::before { content: '−'; transform: translate(-50%, -50%); }
         .accordion .department-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; background: var(--card-background); border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 var(--border-radius-md) var(--border-radius-md); padding: 0 20px; }
@@ -71,7 +98,7 @@
         .department-checkbox-item { display: block; padding: 8px 10px; cursor: pointer; border-radius: 5px; }
         .department-checkbox-item:hover { background-color: #e9ecef; }
         .department-checkbox-item input { margin-left: 10px; }
-        @media (max-width: 768px) { .container { padding: 0 10px; margin: 10px auto; } .header { padding: 20px; margin-bottom: 20px; } .header h1 { font-size: 1.8em; } .header p { font-size: 1em; } .main-controls { flex-direction: column; align-items: stretch; } .main-controls > div { display: flex; flex-direction: column; gap: 10px; } .main-controls .btn { width: 100%; justify-content: center; } .accordion .department-header h2 { font-size: 1.1em; } .vehicle-table thead { display: none; } .vehicle-table, .vehicle-table tbody, .vehicle-table tr, .vehicle-table td { display: block; width: 100%; } .vehicle-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background-color: var(--card-background); padding: 10px; } .vehicle-table td { text-align: right; padding-right: 50%; position: relative; border: none; border-bottom: 1px solid #eee; padding-top: 8px; padding-bottom: 8px; } .vehicle-table tr td:last-child { border-bottom: none; } .vehicle-table td::before { content: attr(data-label); position: absolute; right: 15px; width: 45%; padding-left: 10px; font-weight: bold; text-align: right; color: var(--primary-color); } .vehicle-table td.actions { padding: 10px 0; padding-right: 0; } .vehicle-table .actions { justify-content: flex-start; } .vehicle-table td.actions::before { display: none; } .modal-content { padding: 20px; margin: 10% auto; width: 95%; } .form-grid { grid-template-columns: 1fr; } #expense-list .expense-item { grid-template-columns: 1fr; gap: 8px; } #expense-list .expense-item .remove-expense-btn { width: 100%; margin-top: 5px; } }
+        @media (max-width: 768px) { .container { padding: 0 10px; margin: 10px auto; } .header { padding: 20px; margin-bottom: 20px; } .header h1 { font-size: 1.8em; } .header p { font-size: 1em; } .main-controls { flex-direction: column; align-items: stretch; } .main-controls > div { display: flex; flex-direction: column; gap: 10px; } .main-controls .btn { width: 100%; justify-content: center; } .accordion .department-header h2 { font-size: 1.1em; flex-wrap: wrap; } .accordion .department-header .dept-count { margin-top: 5px; margin-right: 0; } .vehicle-table thead { display: none; } .vehicle-table, .vehicle-table tbody, .vehicle-table tr, .vehicle-table td { display: block; width: 100%; } .vehicle-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background-color: var(--card-background); padding: 10px; } .vehicle-table td { text-align: right; padding-right: 50%; position: relative; border: none; border-bottom: 1px solid #eee; padding-top: 8px; padding-bottom: 8px; } .vehicle-table tr td:last-child { border-bottom: none; } .vehicle-table td::before { content: attr(data-label); position: absolute; right: 15px; width: 45%; padding-left: 10px; font-weight: bold; text-align: right; color: var(--primary-color); } .vehicle-table td.actions { padding: 10px 0; padding-right: 0; } .vehicle-table .actions { justify-content: flex-start; } .vehicle-table td.actions::before { display: none; } .modal-content { padding: 20px; margin: 10% auto; width: 95%; } .form-grid { grid-template-columns: 1fr; } #expense-list .expense-item { grid-template-columns: 1fr; gap: 8px; } #expense-list .expense-item .remove-expense-btn { width: 100%; margin-top: 5px; } }
     </style>
 </head>
 <body>
@@ -83,23 +110,27 @@
         </header>
 
         <div class="search-bar">
-            <!-- ########## گۆڕانکاری لێرەدایە ########## -->
             <input type="text" id="search-input" placeholder="گەڕان بەپێی ژمارەی تەواوی ئۆتۆمبێل، ناو، یان جۆری ئۆتۆمبێل...">
         </div>
 
-        <!-- ... ostatak HTML koda ostaje isti ... -->
         <div class="summary-cards">
             <div class="card"><h3 class="card-title">کۆی گشتی ئۆتۆمبێلەکان</h3><div class="count" id="total-cars-count">0</div></div>
             <div class="card motorcycle"><h3 class="card-title">کۆی گشتی ماتۆڕسکیلەکان</h3><div class="count" id="total-motorcycles-count">0</div></div>
             <div class="card stopped"><h3 class="card-title">ئۆتۆمبێلە ڕاگیراوەکان</h3><div class="count" id="total-stopped-count">0</div></div>
+            <div class="card warning">
+                <h3 class="card-title">زۆرترین خەرجی</h3>
+                <div class="count" id="highest-expense-amount" style="font-size: 2.2em; margin-bottom: 5px;">0</div>
+                <p id="highest-expense-vehicle" style="font-size: 1em; color: var(--secondary-color); font-weight: 500;">-</p>
+            </div>
         </div>
 
         <div class="main-controls">
-            <button class="btn btn-primary" id="add-new-vehicle-btn">+ زیادکردنی ئۆتۆمبێلی نوێ</button>
+            <!-- ########## گۆڕانکاری لێرەدایە: زیادکردنی span بۆ ئایکۆنەکە ########## -->
+            <button class="btn btn-primary" id="add-new-vehicle-btn"><span class="btn-icon">+</span> زیادکردنی ئۆتۆمبێلی نوێ</button>
             <div>
                 <button class="btn btn-info" id="print-report-btn">چاپکردنی ڕاپۆرتی گشتی</button>
-                <button class="btn btn-success" id="backup-data-btn">داگرتنی داتا (JSON)</button>
-                <button class="btn btn-danger" onclick="document.getElementById('restore-input').click()">بارکردنی داتا (JSON)</button>
+                <button class="btn btn-success" id="backup-data-btn">داگرتنی داتا</button>
+                <button class="btn btn-danger" onclick="document.getElementById('restore-input').click()">بارکردنی داتا</button>
                 <input type="file" id="restore-input" style="display: none;" accept=".json">
             </div>
         </div>
