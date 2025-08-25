@@ -14,23 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
         'ئۆتۆمبێلەكانی پارێزگای هه‌ولێر - میلاكی ئه‌نجومه‌نی وه‌زیران', 'ئیدارەی سۆران – نووسینگەی تایبەت', 'ئۆتۆمبیل تۆمار نه‌كراوه‌كان',
         'دیوانی پارێزگا - كارگێری گشتی  + فه‌رمانگه‌ جیاوازەكانی- ماتۆرسكیل', 'فه‌رمانگه‌  جیاوازەكان له‌سه‌ر پارێزگای هه‌ولێر - هاته‌خوار'
     ];
-
-    // ########## گۆڕانکاری لێرەدایە: لیستی ئەو بەشانەی کە دەچنە ناو کۆی گشتی پارێزگاوە ##########
+    
     const includedDepartmentsForMainTotal = [
-        'دیوانی پارێزگا / نوسينگه‌ی پارێزگار',
-        'دیوانی پارێزگا / كارگێری گشتی',
-        'دیوانی پارێزگا / خزمه‌ت گوزاری شۆفیران',
-        'قائمقامیه‌ته‌كان',
-        'بەرێوەبەری ناحيەكان (معوم)',
-        'ناحیه‌كان',
-        'ئەنجوومەنی پارێزگا',
-        'خانووبەرەی میری',
-        'گۆشتگەی هاوچەرخی هەولێر',
-        'فەرمانگە جیاوازەكان',
-        'Ejcc پارێزگا',
-        'دیوانی پارێزگا - له‌لایه‌ن فه‌رمانبه‌ران مامه‌له‌ی كرینیان بۆ كرایه',
-        'ئۆتۆمبێلە راگیراوەكان‌ له‌ گه‌راجی ناوچه‌ی پیشه‌سازی  له‌كاركه‌وتوون', // This was in your list
-        'ئۆتۆمبێلە راگیراوەكان له‌ گەراجی دیوانی پارێزگای هه‌ولێر'
+        'دیوانی پارێزگا / نوسينگه‌ی پارێزگار', 'دیوانی پارێزگا / كارگێری گشتی', 'دیوانی پارێزگا / خزمه‌ت گوزاری شۆفیران',
+        'قائمقامیه‌ته‌كان', 'بەرێوەبەری ناحيەكان (معوم)', 'ناحیه‌كان', 'ئەنجوومەنی پارێزگا', 'خانووبەرەی میری',
+        'گۆشتگەی هاوچەرخی هەولێر', 'فەرمانگە جیاوازەكان', 'Ejcc پارێزگا', 'دیوانی پارێزگا - له‌لایه‌ن فه‌رمانبه‌ران مامه‌له‌ی كرینیان بۆ كرایه',
+        'ئۆتۆمبێلە راگیراوەكان‌ له‌ گه‌راجی ناوچه‌ی پیشه‌سازی  له‌كاركه‌وتوون', 'ئۆتۆمبێلە راگیراوەكان له‌ گەراجی دیوانی پارێزگای هه‌ولێر'
     ];
     
     const STORAGE_KEY = 'erbil_gov_vehicles_data_v3';
@@ -60,6 +49,39 @@ document.addEventListener('DOMContentLoaded', () => {
         selectAllDeptsBtn: document.getElementById('select-all-depts-btn'),
         deselectAllDeptsBtn: document.getElementById('deselect-all-depts-btn'),
     };
+    
+    function printContent(htmlContent) {
+        const oldFrame = document.getElementById('print-frame');
+        if (oldFrame) {
+            oldFrame.remove();
+        }
+
+        const printFrame = document.createElement('iframe');
+        printFrame.id = 'print-frame';
+        printFrame.style.position = 'absolute';
+        printFrame.style.width = '0';
+        printFrame.style.height = '0';
+        printFrame.style.border = '0';
+        document.body.appendChild(printFrame);
+        
+        const frameDoc = printFrame.contentWindow.document;
+        frameDoc.open();
+        frameDoc.write(htmlContent);
+        frameDoc.close();
+
+        setTimeout(() => {
+            try {
+                printFrame.contentWindow.focus();
+                printFrame.contentWindow.print();
+            } catch(e) {
+                console.error("Print failed:", e);
+                alert("نەتوانرا چاپ بکرێت. تکایە دڵنیابە لەوەی وێبگەڕەکەت ڕێگری لە چاپکردن ناکات.");
+            }
+            setTimeout(() => {
+                document.body.removeChild(printFrame);
+            }, 1000);
+        }, 500);
+    }
 
     function renderUI(searchTerm = '') {
         DOM.departmentList.innerHTML = '';
@@ -150,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSummaryCards() {
         const allVehicles = Object.values(vehicleData);
 
-        // ########## گۆڕانکاری لێرەدایە: شێوازی ژماردنی کۆی گشتی پارێزگا ##########
         const mainTotalVehicles = allVehicles.filter(v => includedDepartmentsForMainTotal.includes(v.department));
         document.getElementById('main-total-count').textContent = mainTotalVehicles.length;
         
@@ -317,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('هەڵە: ناوی بەشەکە دروست نییە!');
         }
     }
-
+    
     function renderExpenseItem(expense = {}, isViewOnly = false) {
         const item = document.createElement('div');
         item.className = 'expense-item';
@@ -344,6 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.totalExpenses.textContent = total.toLocaleString();
     }
 
+    // ########## گۆڕانکاری لێرەدایە: لابردنی فووتەر لە ڕاپۆرتی تاکەکەسی ##########
     function printSingleVehicle(vehicleId) {
         const vehicle = vehicleData[vehicleId];
         if (!vehicle) return;
@@ -355,23 +377,28 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             expensesHTML = `<h3 class="print-section-title">تۆماری خەرجییەکان</h3><table class="print-table"><thead><tr><th>بڕی پارە (دینار)</th><th>بەروار</th><th>ژ. پسوڵە</th><th>هۆکاری خەرجکردن</th></tr></thead><tbody>${vehicle.expenses.map(exp => `<tr><td>${exp.amount ? Number(exp.amount).toLocaleString() : '0'}</td><td>${exp.date || ''}</td><td>${exp.receipt || ''}</td><td>${exp.reason || ''}</td></tr>`).join('')}</tbody><tfoot><tr><td style="font-weight: bold;">کۆی گشتی:</td><td colspan="3" style="font-weight: bold; text-align: left;">${totalExpenses.toLocaleString()} دینار</td></tr></tfoot></table>`;
         }
-        const printContent = `<div class="print-header"><h1>ڕاپۆرتی وردی ئۆتۆمبێل</h1><p>پارێزگای هەولێر</p></div><h3 class="print-section-title">زانیارییە سەرەکییەکان</h3><table class="print-table info-table"><tbody><tr><td><strong>بەش:</strong></td><td>${vehicle.department || ''}</td><td><strong>جۆری ئۆتۆمبێل:</strong></td><td>${vehicle.vehicleType || ''}</td></tr><tr><td><strong>ژمارەی ئۆتۆمبێل:</strong></td><td>${vehicle.vehicleNumber || ''}</td><td><strong>ڕەنگ:</strong></td><td>${vehicle.vehicleColor || ''}</td></tr><tr><td><strong>مۆدێل (ساڵ):</strong></td><td>${vehicle.vehicleModel || ''}</td><td><strong>ژمارەی شانسی (VIN):</strong></td><td>${vehicle.vinNumber || ''}</td></tr><tr><td><strong>ناوی بەکارهێنەر:</strong></td><td>${vehicle.userName || ''}</td><td><strong>لایەنی وەرگر:</strong></td><td>${vehicle.recipientParty || ''}</td></tr><tr><td><strong>ژمارەی پەیوەندی:</strong></td><td>${vehicle.contactNumber || ''}</td><td><strong>ژمارەی دۆسیە:</strong></td><td>${vehicle.fileNumber || ''}</td></tr><tr><td><strong>بەرواری وەرگرتن:</strong></td><td colspan="3">${vehicle.receiptDate || ''}</td></tr><tr><td><strong>تێبینی:</strong></td><td colspan="3" style="white-space: pre-wrap; line-height: 1.6;">${vehicle.notes || 'هیچ تێبینییەک نییە'}</td></tr></tbody></table>${expensesHTML}<div class="print-footer"><p>بەرواری چاپ: ${new Date().toLocaleDateString('ar-IQ')}</p><p>&copy; ${new Date().getFullYear()} بەڕێوەبەرایەتی IT - پارێزگای هەولێر</p></div>`;
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`<!DOCTYPE html><html dir="rtl" lang="ku"><head><meta charset="UTF-8"><title>ڕاپۆرتی ئۆتۆمبێل - ${vehicle.vehicleNumber || ''}</title><style>body{font-family:'Segoe UI',Tahoma,sans-serif;margin:20px;direction:rtl;color:#333}.print-header{text-align:center;margin-bottom:25px;border-bottom:2px solid #000;padding-bottom:10px}.print-header h1{margin:0;font-size:22px}.print-header p{margin:5px 0 0;font-size:16px}.print-section-title{background-color:#f2f2f2;padding:8px;margin-top:25px;margin-bottom:10px;font-size:16px;border-right:4px solid #555}.print-table{width:100%;border-collapse:collapse;font-size:14px}.print-table th,.print-table td{border:1px solid #ccc;padding:8px;text-align:right;vertical-align:top}.print-table th{background-color:#e9ecef;font-weight:bold}.info-table td:nth-child(odd){width:15%;font-weight:bold}.info-table td:nth-child(even){width:35%}.print-footer{margin-top:40px;text-align:center;font-size:12px;color:#777;border-top:1px solid #ccc;padding-top:10px}@page{size:A4;margin:15mm}</style></head><body>${printContent}<script>window.onload=function(){setTimeout(function(){window.print();window.close()},250)};</script></body></html>`);
-        printWindow.document.close();
+        
+        // فووتەر لێرە لابرا
+        const reportBody = `<div class="print-header"><h1>ڕاپۆرتی وردی ئۆتۆمبێل</h1><p>پارێزگای هەولێر</p></div><h3 class="print-section-title">زانیارییە سەرەکییەکان</h3><table class="print-table info-table"><tbody><tr><td><strong>بەش:</strong></td><td>${vehicle.department || ''}</td><td><strong>جۆری ئۆتۆمبێل:</strong></td><td>${vehicle.vehicleType || ''}</td></tr><tr><td><strong>ژمارەی ئۆتۆمبێل:</strong></td><td>${vehicle.vehicleNumber || ''}</td><td><strong>ڕەنگ:</strong></td><td>${vehicle.vehicleColor || ''}</td></tr><tr><td><strong>مۆدێل (ساڵ):</strong></td><td>${vehicle.vehicleModel || ''}</td><td><strong>ژمارەی شانسی (VIN):</strong></td><td>${vehicle.vinNumber || ''}</td></tr><tr><td><strong>ناوی بەکارهێنەر:</strong></td><td>${vehicle.userName || ''}</td><td><strong>لایەنی وەرگر:</strong></td><td>${vehicle.recipientParty || ''}</td></tr><tr><td><strong>ژمارەی پەیوەندی:</strong></td><td>${vehicle.contactNumber || ''}</td><td><strong>ژمارەی دۆسیە:</strong></td><td>${vehicle.fileNumber || ''}</td></tr><tr><td><strong>بەرواری وەرگرتن:</strong></td><td colspan="3">${vehicle.receiptDate || ''}</td></tr><tr><td><strong>تێبینی:</strong></td><td colspan="3" style="white-space: pre-wrap; line-height: 1.6;">${vehicle.notes || 'هیچ تێبینییەک نییە'}</td></tr></tbody></table>${expensesHTML}`;
+        
+        // ستایلی CSSـی فووتەریش لێرە لابرا
+        const fullHtml = `<!DOCTYPE html><html dir="rtl" lang="ku"><head><meta charset="UTF-8"><title>ڕاپۆرتی ئۆتۆمبێل - ${vehicle.vehicleNumber || ''}</title><style>body{font-family:'Segoe UI',Tahoma,sans-serif;margin:20px;direction:rtl;color:#333}.print-header{text-align:center;margin-bottom:25px;border-bottom:2px solid #000;padding-bottom:10px}.print-header h1{margin:0;font-size:22px}.print-header p{margin:5px 0 0;font-size:16px}.print-section-title{background-color:#f2f2f2;padding:8px;margin-top:25px;margin-bottom:10px;font-size:16px;border-right:4px solid #555}.print-table{width:100%;border-collapse:collapse;font-size:14px}.print-table th,.print-table td{border:1px solid #ccc;padding:8px;text-align:right;vertical-align:top}.print-table th{background-color:#e9ecef;font-weight:bold}.info-table td:nth-child(odd){width:15%;font-weight:bold}.info-table td:nth-child(even){width:35%}@page{size:A4;margin:15mm}</style></head><body>${reportBody}</body></html>`;
+
+        printContent(fullHtml);
     }
 
     function printGeneralReport(departmentsToPrint) {
-        let reportHTML = `<div style="text-align: center; margin-bottom: 20px;"><h1>ڕاپۆرتی گشتی ئۆتۆمبێلەکان</h1><p>بەروار: ${new Date().toLocaleDateString()}</p></div>`;
+        let reportBody = `<div style="text-align: center; margin-bottom: 20px;"><h1>ڕاپۆرتی گشتی ئۆتۆمبێلەکان</h1><p>بەروار: ${new Date().toLocaleDateString()}</p></div>`;
         departmentsToPrint.forEach(deptName => {
             const vehiclesInDept = Object.values(vehicleData).filter(v => v.department === deptName);
             if (vehiclesInDept.length > 0) {
-                reportHTML += `<div style="page-break-inside: avoid;"><h3 style="background-color: #f0f0f0; padding: 5px; border-right: 3px solid #555; margin-top: 15px;">${deptName} (کۆ: ${vehiclesInDept.length})</h3><table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;"><thead><tr><th>جۆری ئۆتۆمبێل</th><th>ژمارەی ئۆتۆمبێل</th><th>مۆدێل</th><th>لایەنی وەرگر</th><th>بەکارهێنەر</th></tr></thead><tbody>${vehiclesInDept.map(v => `<tr><td>${v.vehicleType || ''}</td><td>${v.vehicleNumber || ''}</td><td>${v.vehicleModel || ''}</td><td>${v.recipientParty || ''}</td><td>${v.userName || ''}</td></tr>`).join('')}</tbody></table></div>`;
+                reportBody += `<div style="page-break-inside: avoid;"><h3 style="background-color: #f0f0f0; padding: 5px; border-right: 3px solid #555; margin-top: 15px;">${deptName} (کۆ: ${vehiclesInDept.length})</h3><table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;"><thead><tr><th>جۆری ئۆتۆمبێل</th><th>ژمارەی ئۆتۆمبێل</th><th>مۆدێل</th><th>لایەنی وەرگر</th><th>بەکارهێنەر</th></tr></thead><tbody>${vehiclesInDept.map(v => `<tr><td>${v.vehicleType || ''}</td><td>${v.vehicleNumber || ''}</td><td>${v.vehicleModel || ''}</td><td>${v.recipientParty || ''}</td><td>${v.userName || ''}</td></tr>`).join('')}</tbody></table></div>`;
             }
         });
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>ڕاپۆرتی گشتی ئۆتۆمبێلەکان</title><style>body{font-family:'Segoe UI',Tahoma,sans-serif;margin:0;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #333;padding:5px;text-align:right;word-break:break-word}h1,h2,h3{text-align:right}h1,h2{text-align:center}@page{size:A4;margin:10mm;@bottom-center{content:"Page " counter(page) " of " counter(pages);font-size:10pt}}@media print{div{page-break-inside:avoid}h3{page-break-before:auto}}</style></head><body>${reportHTML}<script>window.onload=function(){setTimeout(function(){window.print();window.close()},250)};</script></body></html>`);
-        printWindow.document.close();
+        
+        const fullHtml = `<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>ڕاپۆرتی گشتی ئۆتۆمبێلەکان</title><style>body{font-family:'Segoe UI',Tahoma,sans-serif;margin:0;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #333;padding:5px;text-align:right;word-break:break-word}h1,h2,h3{text-align:right}h1,h2{text-align:center}@page{size:A4;margin:10mm;@bottom-center{content:"Page " counter(page) " of " counter(pages);font-size:10pt}}@media print{div{page-break-inside:avoid}h3{page-break-before:auto}}</style></head><body>${reportBody}</body></html>`;
+
+        printContent(fullHtml);
     }
 
     function saveData() {
