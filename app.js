@@ -15,14 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
         'دیوانی پارێزگا - كارگێری گشتی  + فه‌رمانگه‌ جیاوازەكانی- ماتۆرسكیل', 'فه‌رمانگه‌  جیاوازەكان له‌سه‌ر پارێزگای هه‌ولێر - هاته‌خوار'
     ];
 
-    const excludedDepartmentsForMainTotal = [
-        'Ejcc پارێزگا - میلاكی وه‌زاره‌تی ناوخۆ',
-        'ئۆتۆمبێلە راگیراوەكان‌ له‌ گه‌راجی ناوچه‌ی پیشه‌سازی  له‌كاركه‌وتوون سه‌ر به‌ EJCC  يـــــــــــــــــــه',
-        'ئۆتۆمبێلەكانی لیژنه‌ی زێده‌رۆیی پارێزگای هه‌ولێر- میلاكی وه‌زاره‌تی ناوخۆ',
-        'ئۆتۆمبێلەكانی پارێزگای هه‌ولێر - میلاكی ئه‌نجومه‌نی وه‌زیران',
-        'ئیدارەی سۆران – نووسینگەی تایبەت',
-        'فه‌رمانگه‌  جیاوازەكان له‌سه‌ر پارێزگای هه‌ولێر - هاته‌خوار',
-        'بەرێوەبەری ناحیەكان - میلاكی وه‌زاره‌تی ناوخۆ'
+    // ########## گۆڕانکاری لێرەدایە: لیستی ئەو بەشانەی کە دەچنە ناو کۆی گشتی پارێزگاوە ##########
+    const includedDepartmentsForMainTotal = [
+        'دیوانی پارێزگا / نوسينگه‌ی پارێزگار',
+        'دیوانی پارێزگا / كارگێری گشتی',
+        'دیوانی پارێزگا / خزمه‌ت گوزاری شۆفیران',
+        'قائمقامیه‌ته‌كان',
+        'بەرێوەبەری ناحيەكان (معوم)',
+        'ناحیه‌كان',
+        'ئەنجوومەنی پارێزگا',
+        'خانووبەرەی میری',
+        'گۆشتگەی هاوچەرخی هەولێر',
+        'فەرمانگە جیاوازەكان',
+        'Ejcc پارێزگا',
+        'دیوانی پارێزگا - له‌لایه‌ن فه‌رمانبه‌ران مامه‌له‌ی كرینیان بۆ كرایه',
+        'ئۆتۆمبێلە راگیراوەكان‌ له‌ گه‌راجی ناوچه‌ی پیشه‌سازی  له‌كاركه‌وتوون', // This was in your list
+        'ئۆتۆمبێلە راگیراوەكان له‌ گەراجی دیوانی پارێزگای هه‌ولێر'
     ];
     
     const STORAGE_KEY = 'erbil_gov_vehicles_data_v3';
@@ -142,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSummaryCards() {
         const allVehicles = Object.values(vehicleData);
 
-        const mainTotalVehicles = allVehicles.filter(v => !excludedDepartmentsForMainTotal.includes(v.department));
+        // ########## گۆڕانکاری لێرەدایە: شێوازی ژماردنی کۆی گشتی پارێزگا ##########
+        const mainTotalVehicles = allVehicles.filter(v => includedDepartmentsForMainTotal.includes(v.department));
         document.getElementById('main-total-count').textContent = mainTotalVehicles.length;
         
         document.getElementById('total-cars-count').textContent = allVehicles.length;
@@ -309,14 +318,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ########## گۆڕانکاری لێرەدایە: زیادکردنی پەیامی دڵنیابوونەوە پێش سڕینەوەی خەرجی ##########
     function renderExpenseItem(expense = {}, isViewOnly = false) {
         const item = document.createElement('div');
         item.className = 'expense-item';
         item.innerHTML = `<input type="number" class="expense-amount" placeholder="بڕی پارە" value="${expense.amount || ''}" ${isViewOnly ? 'disabled' : ''}><input type="date" class="expense-date" placeholder="بەروار" value="${expense.date || ''}" ${isViewOnly ? 'disabled' : ''}><input type="text" class="expense-receipt" placeholder="ژ. پسوڵە" value="${expense.receipt || ''}" ${isViewOnly ? 'disabled' : ''}><input type="text" class="expense-reason" placeholder="هۆکاری خەرجکردن" value="${expense.reason || ''}" ${isViewOnly ? 'disabled' : ''}><button type="button" class="btn btn-sm btn-danger remove-expense-btn" ${isViewOnly ? 'style="display:none;"' : ''}>X</button>`;
         
         item.querySelector('.remove-expense-btn').addEventListener('click', () => {
-            // پەیامی دڵنیابوونەوە
             if (confirm('دڵنیایت لە سڕینەوەی ئەم خەرجییە؟')) {
                 item.remove();
                 updateTotalExpenses();
